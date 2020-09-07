@@ -112,7 +112,11 @@ stop_call = false;
 movie_k = 0;
 
 for k = wait_N:N
-    if k > 0
+    if k == 0
+        value_light_sensor = func.getLightSensor(state_robot, list_light_sensor, field_line, environmental_light_noise, use_noise);
+        [value_range_sensor, range_detect_points] = func.getRangeSensor(state_robot, list_range_sensor, field_wall);
+        control_input = controller_func(0, delta_t, value_light_sensor, value_range_sensor, control_param);
+    elseif k > 0
         cond_string = "スタート";
         if mod(k,5) == 0    % 20Hz
             value_light_sensor = func.getLightSensor(state_robot, list_light_sensor, field_line, environmental_light_noise, use_noise);
@@ -170,6 +174,7 @@ plot(j.*delta_t, sum(z(1:k,1:17)/17, 2), 'LineWidth', 2);
 legend("目標値","計測値", 'FontSize', 14, 'Location', 'southeast')
 xlabel("時刻 [s]", 'FontSize', 14)
 ylabel("センサ値", 'FontSize', 14)
+ylim([0 300])
 grid on
 
 if exist('save_video_name', 'var') == 1
